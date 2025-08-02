@@ -1,29 +1,20 @@
-const express =require('express');
-const cors =require('cors');
-const app =express();
-const PORT = process.env.PORT || 5000;
-require('dotenv').config()
+const express = require("express");
+const cors =require('cors')
+const askQuestion = require('./openrouter');
+
+const app = express();
 app.use(cors())
 app.use(express.json());
 
 app.post("/api/ask", async (req, res) => {
   const { question } = req.body;
-
-  if (!question) {
-    return res.status(400).json({ error: "Question is required" });
-  }
-
   try {
     const answer = await askQuestion(question);
     res.json({ answer });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
-app.get('/',(req,res)=>{
-    res.send('feddback tracker server is running')
-})
 
-app.listen(PORT,()=>{
-    console.log(`Feedback job tracker https://localhost:${PORT}`)
-})
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
